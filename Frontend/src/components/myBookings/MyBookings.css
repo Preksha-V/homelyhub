@@ -1,0 +1,163 @@
+.bookings-container {
+  padding: 40px 20px;
+  max-width: 1000px;
+}
+
+.page-title {
+  font-size: 36px;
+  margin-bottom: 40px;
+  color: #333;
+  text-align: center;
+}
+
+.no-bookings {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.no-bookings p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.booking-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.booking-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.booking-image {
+  height: 100%;
+  overflow: hidden;
+}
+
+.booking-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.booking-details {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.booking-details h3 {
+  font-size: 22px;
+  color: #333;
+  margin: 0;
+}
+
+.booking-location {
+  color: #666;
+  font-size: 15px;
+}
+
+.booking-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.date-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.date-label {
+  font-size: 13px;
+  color: #999;
+  font-weight: 500;
+}
+
+.date-value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.booking-info-row {
+  display: flex;
+  gap: 20px;
+  color: #666;
+  font-size: 15px;
+}
+
+.booking-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  margin-top: auto;
+}
+
+.booking-price {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.price-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.price-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ff385c;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+}
+
+@media (max-width: 768px) {
+  .booking-card {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-image {
+    height: 200px;
+  }
+  
+  .booking-dates {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-footer {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .btn-cancel {
+    width: 100%;
+  }
+}

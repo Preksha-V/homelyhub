@@ -1,92 +1,73 @@
-import { Property } from '../Models/PropertyModel.js';
 import { Booking } from '../Models/bookingModel.js';
-const createOrder = async (a, b) => {
-        const {
-                amount: c,
-                propertyId: d,
-                fromDate: e,
-                toDate: f,
-                guests: g
-            } = a['body'], h = 'order_' + Date['now']();
-        b['json']({
-            'success': !![],
-            'message': 'Order\x20created\x20successfully',
-            'orderId': h,
-            'amount': c,
-            'propertyId': d,
-            'fromDate': e,
-            'toDate': f,
-            'guests': g
-        });
-    }, verifyPayment = async (a, b) => {
-        const {
-            orderId: c,
-            bookingDetails: d,
-            forceStatus: e
-        } = a['body'];
-        if (e === 'success') {
-            const f = 'pay_' + Date['now'](), g = await Booking['create']({
-                    'user': a['user']['_id'],
-                    'property': d['propertyId'],
-                    'price': d['price'],
-                    'fromDate': d['fromDate'],
-                    'toDate': d['toDate'],
-                    'guests': d['guests'],
-                    'numberOfNights': d['nights'],
-                    'paid': !![]
-                }), h = await Property['findByIdAndUpdate'](d['propertyId'], {
-                    '$push': {
-                        'currentBookings': {
-                            'bookingId': g['_id'],
-                            'fromDate': d['fromDate'],
-                            'toDate': d['toDate'],
-                            'userId': a['user']['_id']
-                        }
-                    }
-                }, { 'new': !![] });
-            b['json']({
-                'success': !![],
-                'message': 'Payment\x20successful!\x20Booking\x20confirmed.',
-                'paymentId': f,
-                'orderId': c,
-                'booking': g
-            });
-        } else
-            b['status'](0x190)['json']({
-                'success': ![],
-                'message': 'Payment\x20failed!\x20Please\x20try\x20again.',
-                'orderId': c
-            });
-    }, getUserBookings = async (a, b) => {
-        try {
-            const c = await Booking['find']({ 'user': a['user']['_id'] });
-            b['status'](0xc8)['json']({
-                'status': 'success',
-                'data': { 'bookings': c }
-            });
-        } catch (d) {
-            b['status'](0x191)['json']({
-                'status': 'fail',
-                'message': d['message']
-            });
+import { Property } from '../Models/PropertyModel.js';
+import moment from 'moment';
+
+// Check availability
+export const checkAvailability = async (req, res) => {
+  try {
+    const { propertyId, fromDate, toDate } = req.body;
+    
+    const property = await Property.findById(propertyId);
+    
+    if (!property) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Property not found'
+      });
+    }
+    
+    const from = moment(fromDate);
+    const to = moment(toDate);
+    
+    const isAvailable = property.currentBookings.every(booking => {
+      const bookingFrom = moment(booking.fromDate);
+      const bookingTo = moment(booking.toDate);
+      
+      return to.isBefore(bookingFrom) || from.isAfter(bookingTo);
+    });
+    
+    res.status(200).json({
+      status: 'success',
+      data: {
+        available: isAvailable,
+        message: isAvailable ? 'Property is available' : 'Property is not available for selected dates'
+      }
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'fail',
+      message: err.message
+    });
+  }
+};
+
+// Get booking statistics
+export const getBookingStats = async (req, res) => {
+  try {
+    const stats = await Booking.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalBookings: { $sum: 1 },
+          totalRevenue: { $sum: '$price' },
+          avgBookingValue: { $avg: '$price' }
         }
-    }, getBookingDetails = async (a, b) => {
-        try {
-            const c = await Booking['findById'](a['params']['bookingId']);
-            b['status'](0xc8)['json']({
-                'status': 'success',
-                'data': { 'bookings': c }
-            });
-        } catch (d) {
-            b['status'](0x191)['json']({
-                'status': 'fail',
-                'message': d['message']
-            });
-        }
-    };
-export {
-    getBookingDetails,
-    getUserBookings,
-    createOrder,
-    verifyPayment
+      }
+    ]);
+    
+    res.status(200).json({
+      status: 'success',
+      data: { stats: stats[0] }
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'fail',
+      message: err.message
+    });
+  }
+};
+
+export default {
+  checkAvailability,
+  getBookingStats
 };

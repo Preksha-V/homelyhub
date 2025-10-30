@@ -1,0 +1,60 @@
+.search-bar {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  align-items: flex-end;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.search-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+}
+
+.search-field input,
+.search-field .react-datepicker-wrapper input {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #f7f7f7;
+  transition: background 0.3s;
+}
+
+.search-field input:focus,
+.search-field .react-datepicker-wrapper input:focus {
+  outline: none;
+  background: #efefef;
+}
+
+.search-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  white-space: nowrap;
+  margin-bottom: 0;
+}
+
+@media (max-width: 968px) {
+  .search-bar {
+    flex-direction: column;
+    border-radius: 16px;
+    align-items: stretch;
+  }
+  
+  .search-btn {
+    border-radius: 8px;
+  }
+}
